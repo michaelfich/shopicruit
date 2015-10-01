@@ -5,43 +5,44 @@ require_relative 'product'
 
 class Shopicruit
 
-  attr_accessor :address, :products
+  attr_accessor :products, :product_type
 
-  def initialize(address=nil)
-    @address = address || 'http://shopicruit.myshopify.com/products.json'
-    @products = self.get_products
+  def self.price_of?(product_type=nil)
+    shopicruit = new(product_type)
+    shopicruit.get_products
+    shopicruit.calculate_price
+  end
+
+  def initialize(product_type=nil)
+    @products = []
+    @product_type = product_type
   end
 
   def query_api
-    uri = URI(@address)
+    uri = URI('http://shopicruit.myshopify.com/products.json')
     JSON.parse(Net::HTTP.get(uri))
   end
 
-  def get_products(product_type=nil)
+  def get_products()
     response = self.query_api
-
     response["products"].inject([]) do |products, product|
-      if product.nil?
-        products << Product.new(product)
-      elsif product_type.class == String && product['product_type'] == product_type
-        products << Product.new(product)
-      elsif product_type.class == Array && product_type.include?(product['product_type'])
-        products << Product.new(product)
+      if @product_type.nil?
+        @products << Product.new(product)
+      elsif @product_type.is_a?(String) && product['product_type'] == @product_type
+        @products << Product.new(product)
+      elsif @product_type.is_a?(Array) && @product_type.include?(product['product_type'])
+        @products << Product.new(product)
       end
-
-      products
     end
+    @products
   end
 
-  def get_total_price(product_types=nil)
-    products = self.get_products(product_types)
-
-    total_price = products.inject(0) do |sum, product|
-      sum = product.variants.inject(sum) do |prices, variant|
+  def calculate_price()
+    total_price = @products.inject(0) do |sum, product|
+      sum += product.variants.inject(0) do |prices, variant|
         prices += variant.price.to_f
       end
     end
-
     total_price.round(2)
   end
 

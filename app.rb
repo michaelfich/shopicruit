@@ -1,4 +1,5 @@
 require_relative 'lib/shopicruit'
 
-shopicruit = Shopicruit.new
-puts shopicruit.get_total_price(["Wallet", "Lamp"])
+puts Shopicruit.price_of?
+puts Shopicruit.price_of? "Wallet"
+puts Shopicruit.price_of? ["Wallet", "Lamp"]
