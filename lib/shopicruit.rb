@@ -6,17 +6,17 @@ require_relative 'product'
 
 class Shopicruit
 
-  attr_accessor :products, :product_type
+  attr_accessor :products, :query
 
-  def self.price_of?(product_type=nil)
-    shopicruit = new(product_type)
+  def self.price_of?(query=nil)
+    shopicruit = new(query)
     shopicruit.get_products
     shopicruit.calculate_price
   end
 
-  def initialize(product_type=nil)
+  def initialize(query=nil)
     @products = []
-    @product_type = product_type
+    @query = query
   end
 
   def query_api
@@ -27,11 +27,11 @@ class Shopicruit
 
   def get_products()
     self.query_api["products"].each do |product|
-      if @product_type.nil?
+      if @query.nil?
         @products << Product.new(product)
-      elsif @product_type.is_a?(String) && product['product_type'] == @product_type
+      elsif @query.is_a?(String) && product['product_type'] == @query
         @products << Product.new(product)
-      elsif @product_type.is_a?(Array) && @product_type.include?(product['product_type'])
+      elsif @query.is_a?(Array) && @query.include?(product['product_type'])
         @products << Product.new(product)
       end
     end
