@@ -25,7 +25,7 @@ class Shopicruit
     JSON.parse(http_response)
   end
 
-  def get_products()
+  def get_products
     self.query_api["products"].each do |product|
       if @query.nil?
         @products << Product.new(product)
@@ -38,7 +38,7 @@ class Shopicruit
     @products
   end
 
-  def calculate_price()
+  def calculate_price
     total_price = @products.inject(0) do |sum, product|
       sum += product.variants.inject(0) do |prices, variant|
         prices += variant.price.to_f
