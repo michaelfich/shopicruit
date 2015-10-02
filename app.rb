@@ -1,3 +1,5 @@
 require_relative 'lib/shopicruit'
 
-puts Shopicruit.price_of? ["Wallet", "Lamp"]
+price = Shopicruit.price_of? ["Wallet", "Lamp"]
+
+puts "The total price of all Wallets and Lamps in the Shopicruit store is $#{price}"
