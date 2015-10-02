@@ -1,5 +1,3 @@
-require 'date'
-
 require_relative 'variant'
 require_relative 'image'
 require_relative 'options'

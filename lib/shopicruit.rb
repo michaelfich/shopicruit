@@ -1,3 +1,4 @@
+require 'date'
 require 'json'
 require 'net/http'
 
@@ -20,12 +21,12 @@ class Shopicruit
 
   def query_api
     uri = URI('http://shopicruit.myshopify.com/products.json')
-    JSON.parse(Net::HTTP.get(uri))
+    http_response = Net::HTTP.get(uri)
+    JSON.parse(http_response)
   end
 
   def get_products()
-    response = self.query_api
-    response["products"].inject([]) do |products, product|
+    self.query_api["products"].each do |product|
       if @product_type.nil?
         @products << Product.new(product)
       elsif @product_type.is_a?(String) && product['product_type'] == @product_type
